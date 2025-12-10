@@ -1,13 +1,13 @@
 # API Documentation Overview
 
-## 🔒 Fusee Backend Grid API
+## 🔒 Solick API
 
 A comprehensive, secure backend API built with Express.js, TypeScript, Prisma, and PostgreSQL.
 
 ### **📋 API Information**
 - **Version**: 1.0.0
 - **Base URL**: `http://localhost:3000` (Development)
-- **Production URL**: `https://api.fusee.com`
+- **Production URL**: `https://api.solick.com`
 - **Documentation**: `/api-docs` (Swagger UI)
 
 ### **🛡️ Security Features**
@@ -125,7 +125,7 @@ A comprehensive, secure backend API built with Express.js, TypeScript, Prisma, a
 #### **Environment Variables**
 ```env
 # Database
-DATABASE_URL=postgresql://username:password@localhost:5432/fusee_backend
+DATABASE_URL=postgresql://username:password@localhost:5432/solick_backend
 
 # Security
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
@@ -215,7 +215,7 @@ The API includes comprehensive logging for:
 ### **📞 Support**
 
 For API support and questions:
-- **Email**: support@fusee.com
+- **Email**: support@solick.com
 - **Documentation**: `/api-docs`
 - **Health Check**: `/health`
 

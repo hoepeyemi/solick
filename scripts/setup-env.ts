@@ -22,7 +22,7 @@ NODE_ENV=development
 PORT=3000
 
 # Database Configuration
-DATABASE_URL="postgresql://username:password@localhost:5432/fusee_backend"
+DATABASE_URL="postgresql://username:password@localhost:5432/solick_backend"
 
 # Grid Configuration (Squads Grid)
 GRID_ENVIRONMENT=sandbox
@@ -41,7 +41,7 @@ REDIS_PASSWORD=
 `;
 
 async function setupEnvironment() {
-  console.log('🚀 Fusee Backend Grid - Environment Setup');
+  console.log('🚀 Solick Backend - Environment Setup');
   console.log('==========================================\n');
 
   // Check if .env already exists
@@ -61,7 +61,7 @@ async function setupEnvironment() {
   console.log('🗄️  Database Configuration:');
   const dbHost = await question('Database host (localhost): ') || 'localhost';
   const dbPort = await question('Database port (5432): ') || '5432';
-  const dbName = await question('Database name (fusee_backend): ') || 'fusee_backend';
+  const dbName = await question('Database name (solick_backend): ') || 'solick_backend';
   const dbUser = await question('Database username: ');
   const dbPassword = await question('Database password: ');
 

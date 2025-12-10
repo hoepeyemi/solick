@@ -6,12 +6,12 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Fusee Backend Grid API',
+      title: 'Solick API',
       version: '1.0.0',
-      description: 'A comprehensive backend API for the Fusee Grid application',
+      description: 'A comprehensive backend API for the Solick application',
       contact: {
         name: 'API Support',
-        email: 'support@fusee.com',
+        email: 'support@solick.com',
       },
     },
     servers: [

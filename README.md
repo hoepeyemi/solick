@@ -1,4 +1,4 @@
-# Fusee Backend Grid
+# Solick Backend
 
 A comprehensive Node.js backend API built with Express, TypeScript, Prisma, and PostgreSQL.
 
@@ -32,7 +32,7 @@ A comprehensive Node.js backend API built with Express, TypeScript, Prisma, and 
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd fusee-backend-grid
+   cd solick-backend
    ```
 
 2. **Install dependencies**
@@ -55,7 +55,7 @@ A comprehensive Node.js backend API built with Express, TypeScript, Prisma, and 
    PORT=3000
 
    # Database Configuration
-   DATABASE_URL="postgresql://username:password@localhost:5432/fusee_backend"
+   DATABASE_URL="postgresql://username:password@localhost:5432/solick_backend"
 
    # Grid Configuration (Squads Grid)
    GRID_ENVIRONMENT=sandbox

@@ -34,7 +34,7 @@ async function main() {
     update: {},
     create: {
       id: 'post-1',
-      title: 'Welcome to Fusee Backend Grid',
+      title: 'Welcome to Solick',
       content: 'This is the first post in our amazing backend system!',
       published: true,
       authorId: user1.id,
