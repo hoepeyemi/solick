@@ -1,0 +1,255 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  firstName   String
+  lastName    String
+  middleName  String?
+  phoneNumber String?
+  walletAddress String?
+  role        UserRole @default(USER)
+  isActive    Boolean  @default(true)
+  
+  // Grid Account Data
+  gridAddress String?  // The Grid account address
+  gridStatus  String?  // Grid account status (e.g., "success")
+  
+  // Grid Authentication Data
+  authResult  Json?    // Complete auth result from Grid SDK
+  sessionSecrets Json? // Session secrets from Grid SDK
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  transactions YieldTransaction[]
+  transfers    Transfer[]
+  gaslessPayments GaslessPayment[]
+  sponsoredTransactions SponsoredTransaction[]
+
+  @@map("users")
+}
+
+model YieldTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Transaction Details
+  type        YieldTransactionType
+  status      YieldTransactionStatus @default(PENDING)
+  
+  // Transaction Data
+  owner       String   // Grid address of the user
+  feePayer    String   // Fee payer address (usually same as owner)
+  mintAddress String?  // Token mint address (for deposits/withdrawals)
+  
+  // Amounts
+  regularAmount    Float?   // Boosted (LUSD) amount
+  protectedAmount  Float?   // Protected (PUSD) amount
+  amount           Float?   // Single amount (for withdrawals)
+  
+  // Referral Data
+  referrer         String?  // Referrer wallet address
+  
+  // Withdrawal Data
+  pendingWithdrawalId Int?  // For regular withdrawal completion
+  
+  // Transaction Data
+  serializedTransaction String? // Base64 encoded transaction
+  transactionSignature  String? // Transaction signature after execution
+  priorityFee           String? // Priority fee in lamports
+  
+  // Metadata
+  luloResponse      Json?   // Raw response from Lulo API
+  errorMessage      String? // Error message if transaction failed
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("yield_transactions")
+}
+
+enum YieldTransactionType {
+  INITIALIZE_REFERRER
+  DEPOSIT
+  WITHDRAW_PROTECTED
+  INITIATE_REGULAR_WITHDRAW
+  COMPLETE_REGULAR_WITHDRAWAL
+}
+
+enum YieldTransactionStatus {
+  PENDING
+  GENERATED
+  SIGNED
+  SUBMITTED
+  CONFIRMED
+  FAILED
+  CANCELLED
+}
+
+model Transfer {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Transfer Details
+  type        TransferType
+  status      TransferStatus @default(PENDING)
+  
+  // Transfer Data
+  fromAddress String   // Sender address (Grid address)
+  toAddress   String   // Recipient address (Grid address)
+  tokenType   TokenType // SOL or USDC
+  
+  // Amounts
+  amount      Float    // Transfer amount
+  decimals    Int      // Token decimals
+  
+  // Token Data
+  mintAddress String?  // Token mint address (for USDC)
+  
+  // Transaction Data
+  serializedTransaction String? // Base64 encoded transaction
+  transactionSignature  String? // Transaction signature after execution
+  recentBlockhash      String? // Recent blockhash used
+  
+  // Fee Data
+  feeAmount   Float?   // Transaction fee amount
+  priorityFee String?  // Priority fee in lamports
+  
+  // Metadata
+  gridResponse    Json?   // Raw response from Grid SDK
+  blockchainResponse Json? // Raw response from blockchain
+  errorMessage    String? // Error message if transfer failed
+  
+  // Memo
+  memo        String?  // Optional memo/note
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("transfers")
+}
+
+enum TransferType {
+  SOL_TRANSFER
+  USDC_TRANSFER
+}
+
+enum TransferStatus {
+  PENDING
+  PREPARED
+  SIGNED
+  SUBMITTED
+  CONFIRMED
+  FAILED
+  CANCELLED
+}
+
+enum TokenType {
+  SOL
+  USDC
+}
+
+enum UserRole {
+  USER
+}
+
+model GaslessPayment {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Payment Details
+  amountUSDC  Float    // Amount paid in USDC (e.g., 0.0003)
+  amount      String   // Amount in smallest units (e.g., "300")
+  signature   String   @unique // Payment transaction signature
+  status      PaymentStatus @default(PENDING)
+  
+  // Credit Details (for future credit system)
+  creditRemaining Float @default(0) // Remaining credit in USDC
+  creditUsed      Float @default(0) // Credit used in USDC
+  
+  // Payment Metadata
+  recipientTokenAccount String // Where payment was sent
+  recipientWallet       String // Recipient wallet address
+  fromAddress          String? // Sender address (if available)
+  network              String  // devnet or mainnet
+  tokenMint           String  // USDC mint address
+  
+  // Transaction Data
+  paymentProof        Json?   // x402 payment proof (if available)
+  explorerUrl         String? // Transaction explorer URL
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  sponsoredTransactions SponsoredTransaction[]
+  
+  @@map("gasless_payments")
+}
+
+model SponsoredTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentId   String?
+  payment     GaslessPayment? @relation(fields: [paymentId], references: [id])
+  
+  // Transaction Details
+  type        SponsoredTransactionType
+  signature   String?  @unique // Sponsored transaction signature
+  solFeePaid  Float?   // SOL fee paid by server (in SOL)
+  usdcCreditUsed Float? // USDC credit used
+  
+  // Transaction Data
+  serializedTransaction String? // Base64 encoded transaction (if available)
+  transactionSignature  String? // Transaction signature (same as signature, for compatibility)
+  
+  status      TransactionStatus @default(PENDING)
+  errorMessage String?
+  
+  // Metadata
+  network     String
+  explorerUrl String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("sponsored_transactions")
+}
+
+enum PaymentStatus {
+  PENDING
+  VERIFIED
+  CONFIRMED
+  FAILED
+  CANCELLED
+}
+
+enum SponsoredTransactionType {
+  USER_TRANSACTION
+  TRANSFER
+  YIELD_OPERATION
+  CUSTOM
+}
+
+enum TransactionStatus {
+  PENDING
+  SUBMITTED
+  CONFIRMED
+  FAILED
+}
