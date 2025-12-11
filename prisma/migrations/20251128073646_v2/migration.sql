@@ -88,6 +88,8 @@ CREATE TABLE "usage_tracking" (
     CONSTRAINT "usage_tracking_pkey" PRIMARY KEY ("id")
 );
 
+
+
 -- CreateTable
 CREATE TABLE "payments" (
     "id" TEXT NOT NULL,
