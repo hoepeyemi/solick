@@ -9,7 +9,8 @@ A comprehensive Node.js backend API for Solana that enables gasless transactions
 | | Link |
 |---|------|
 | **Code repository** | [https://github.com/hoepeyemi/solick](https://github.com/hoepeyemi/solick) |
-| **Demo / presentation** | [Watch on YouTube](https://youtu.be/9Od6CcvIfKU) |
+| **Presentation** | [Watch on YouTube](https://youtu.be/9Od6CcvIfKU) |
+| **Demo** | [Watch on YouTube](https://youtu.be/k6Z9IfnW47Q) |
 
 ---
 
