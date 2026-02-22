@@ -1,6 +1,53 @@
 # Solick Backend
 
-A comprehensive Node.js backend API built with Express, TypeScript, Prisma, and PostgreSQL.
+A comprehensive Node.js backend API for Solana that enables gasless transactions (pay in USDC via the x402 standard), Grid multi-sig wallets, and yield investments—built with Express, TypeScript, Prisma, and PostgreSQL.
+
+---
+
+## Repository & Demo
+
+| | Link |
+|---|------|
+| **Code repository** | [https://github.com/hoepeyemi/solick](https://github.com/hoepeyemi/solick) |
+| **Demo / presentation** | [Watch on YouTube](https://youtu.be/9Od6CcvIfKU) |
+
+---
+
+## Problem Statement & Solution
+
+**Problem:** Users on Solana often lack SOL for transaction fees, face friction with key management for multi-sig workflows, and want simple ways to pay fees in stablecoins (e.g. USDC) or use accumulated credit instead of holding SOL.
+
+**Solution:** Solick provides a backend that (1) **gasless transactions** via the x402 payment standard—users pay in USDC while the server pays SOL for gas; (2) a **credit system** so payments become reusable credit for future transactions; (3) **Grid (Squads) wallet integration** for programmatic multi-sig and balances; and (4) **Lulo yield integration** for yield products. The API is secure, documented (Swagger), and ready for production use.
+
+---
+
+## Tools, Frameworks & Technologies
+
+| Category | Technologies |
+|----------|--------------|
+| **Runtime & language** | Node.js (v18+), TypeScript |
+| **Web framework** | Express.js |
+| **Database & ORM** | PostgreSQL, Prisma |
+| **API docs** | Swagger / OpenAPI |
+| **Security** | Helmet, CORS, rate limiting, JWT, bcrypt, Zod validation |
+| **Blockchain** | Solana (devnet/mainnet), x402 payment standard |
+| **Integrations** | Squads Grid API (wallets), Lulo API (yield) |
+| **Logging & monitoring** | Winston, health checks, optional Redis |
+| **Testing** | Jest |
+
+---
+
+## Technical Implementation Overview
+
+- **REST API:** Express app with typed routes, validation (Zod), and structured error handling. Core domains: users, posts, Grid accounts, gasless/credit transactions, and yield.
+- **Gasless & credit:** Fee payer signs and submits transactions; users pay in USDC (or use existing credit). Payments are stored as `GaslessPayment`; credit is tracked per user and consumed in FIFO order via `SponsoredTransaction` and `gasless-credit.service`.
+- **Grid:** Server-side Grid SDK usage for initiating/completing account creation (OTP), fetching balances by email or wallet, and supporting gasless flows that depend on Grid wallets.
+- **Data layer:** Prisma schema with `User`, `Post`, `GaslessPayment`, `SponsoredTransaction`; migrations and seeding via npm scripts.
+- **Security:** Input validation, JWT auth, role-based access, rate limits, security headers, and CORS configured per environment.
+
+For deeper technical detail, see the in-repo guides (e.g. [COMPLETE_GASLESS_CREDIT_GUIDE.md](./COMPLETE_GASLESS_CREDIT_GUIDE.md), [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)) and the [Project Structure](#project-structure) section below.
+
+---
 
 ## Features
 
@@ -31,8 +78,8 @@ A comprehensive Node.js backend API built with Express, TypeScript, Prisma, and 
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd solick-backend
+   git clone https://github.com/hoepeyemi/solick.git
+   cd solick
    ```
 
 2. **Install dependencies**
