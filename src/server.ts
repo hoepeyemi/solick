@@ -5,7 +5,10 @@ import Logger from './utils/logger';
 import { startRetryService } from './services/retry.service';
 
 const startServer = () => {
- the retry service
+  const server = app.listen(config.port, () => {
+    Logger.info(`🚀 Server running on port ${config.port} in ${config.nodeEnv} mode`);
+    
+    // Start the retry service minified version
     startRetryService();
   });
 
